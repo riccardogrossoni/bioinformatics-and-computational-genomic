@@ -1,0 +1,1 @@
+Also known as fats, they are the main constituents of the cellular membrane, and also function as an energetic reservoir for the cell.

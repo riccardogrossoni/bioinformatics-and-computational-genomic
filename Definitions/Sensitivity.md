@@ -1,0 +1,2 @@
+## In database research
+Ability to identify sequences that are related but evolutionary distant. Increasing the sensitivity means increasing the number of matches observed, but decreasing the speed of the research.

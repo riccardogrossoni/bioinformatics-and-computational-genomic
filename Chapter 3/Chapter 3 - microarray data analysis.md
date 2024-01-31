@@ -1,0 +1,74 @@
+This note will delve deeper on the analysis of data obtained from [[Microarrays]]. We briefly introduced the analysis in the [[Microarrays#Acquisition and pre-processing]] section, but now we will expand it.
+While there are many types of microarrays (DNA, RNA, proteins and tissue based ones) we will focus on DNA microarrays and in particular to the ones used to determine expression levels of genes (see also [[Chapter 3 - Genetic expression]]).
+## Two channels cDNA microarrays
+cDNA microarrays are typically hybridized with cDNA from two samples in order to compare them. One example is diseased vs healthy tissue. They are labeled with two different dyes in order to be identified later. Each gene is represented by one partial cDNA clone. With heat variation cycles the cDNA double strain bonds are broken and hybridization is allowed. The relative intensity of the dye is used to determine up-regulated and down-regulated genes.
+## Single channel oligonucleotides microarrays
+These microarrays are designed to give estimations of the absolute levels of gene expression so comparison of two conditions require two separate single dye hybridizations on two single channel microarrays. each gene is represented as a probe set of some oligonucleotide pairs (10-25 for each probe).
+## Data normalization
+It's the process of removing systematic variations that affect measured gene expression levels in  microarrays experiments. It's based on the hypothesis that measured intensities for each gene represent the gene expression levels (Biologically relevant patterns of expression are typically identified by comparing measured expression levels between different states on a gene-by-gene basis). 
+To do this section we assume that we have a high quality measurement of the intensity of hybridization and we do not account for the particular microarray platform used and the type of measurement reported. We also suppose that background correction, trimming and spot quality assessment has been done (trimming is outlier elimination).
+Let's see what the sources of systematic variation are:
+- **Dye effect**: differences in dye efficiencies. Basically each dye does not react with the same intensity
+- **Scanner malfunction**
+- **Uneven hybridization**: bias is spatially variant
+- **Printing tips**: as explained in the microarray section, slides are printed by robots. they use different extremities, so it's possible that if one works slightly differently than the others the array could have regions with different bias.
+We define the **Expression ratio** of the *i*-th gene on all arrays used as $$T_i={R_i\over{G_i}}  \ \ \  \ \ \ \ \ \ i=1,...,N_{gene}$$^T
+Where R and G denote the target and reference samples respectively.
+The measures of R and G can be made on a single two channel array or on two single channels arrays.
+There is one issue with the expression ratio, it treats up and down regulated genes differently (up regulated by a factor of 10 means expression ratio of 10, down regulated by a factor of 10 means expression ratio 0.1). The solution is obviously to use logarithm:$$log_2(T_i)=log_2({R_i\over{G_i}})  \ \ \  \ \ \ \ \ \ i=1,...,N_{gene}$$
+Now the distribution is simmetric and does not favor any of the regulation
+![[expression_ratio_visualization.png]]
+While doing normalization we assume that we are starting with equal total quantities of mRNA for the two samples we are comparing and the average mass of each molecule in the sample is the same (meaning that the number or molecules is the same). We also assume that the arrayed elements (called **probes**) represent a total or a random sampling of the genes in the organism (This point is important because we also assume that the arrayed elements interrogate the two mRNA samples totally or randomly)
+- If the arrayed genes are selected to represent only the genes we know will change, then we will likely over- or under-sample the genes in one of the biological samples being compared
+- f the array contains all genes or a large enough assortment of random genes of the considered organism, we do not expect to see such bias
+With these assumptions we expect to observe the same average intensity on both channels in all arrays.
+
+There are various types of normalization:
+- **Global normalization**: since we expect to observe the same average intensity on both channels in all arrays we can proceed as follows: $$R_i'=R_i$$ $$G_i'=K_{global}G_i$$ And since the Red and Green ratio should be equal to 1 thanks to the assumptions we obtain $$K_{global}={{\sum_{i=1}^{N_{array}}R_i}\over{\sum_{i=1}^{N_{array}}G_i}}$$ We can also express it in logs as $$log_2(T_i')=log_2(T_i)-log_2(K_{global})$$ Global normalization can have a systematic dependence on intensity, usually appearing as a deviation from zero for low intensity spots (the graph in Minus-Add plots appears as a banana shaped curve), meaning that simple regression is unable to correct the intensity dependent bias.
+- **LOWESS normalization**: aka Locally Weighted Linear Regression. It consists of calculating for each A value ($A_i={log_2(R_i*G_i)\over{2}}$) the regression line on the basis of a subset of points (M,A) around such A value. Remembering that $M_i=log_2(R_i/G_i)$ and $T_i={R_i\over G_i}$ we obtain $$M_i'=log_2(T_i')=log_2(T_i)-M(A_i)=M_i-M(A_i)$$ This equation can be made equivalent to a transformation on the intensities (thanks to $T_i'={R_i'\over G_i'}$) $$R_i'=R_i \ \ \ \ \ \ \ \ \ \ G_i'=G_i*2^{M(A_i)}$$
+Most normalization algorithms can be applied either locally or globally. This is especially useful for spotted arrays, where local normalization is often applied to each group of array elements deposited by a single pen/tip (since, as explained before, very small imperfections can cause a lot of bias).
+Local normalization can help correcting systematic spatial variation errors and biases in the array. Lets see for LOWESS:
+lets call $M_j(A)$ the LOWESS fit for the subarray j: $$M_i'=log_2(T_i')=log_2(T_i)-M_j(A_i)=M_i-M_j(A_i)$$ if the spot i belongs to the subarray j.
+## Variance regularization
+Up until now we have worked on normalization, that fixes the mean measurements, but it's possible that also the variance is different depending on the region of the microarray. 
+Lets define the variance of the normalized log2(ratio) values in the *j*-th sub array as: $$\sigma_j^2={1\over N_j}\sum_{i=1}^{N_j}(M_i')^2 \ \ \ \ \ \ \ \ with \ \ \ \ \ \ \ \ \  M_i'=M_i-M_j(A_i)$$The scaling factor for the log2(ratio) values (in the j-th array) will be $$a_j={\sigma_j^2\over(\prod_{k=1}^{N_{subarray}}\sigma_k^2)^{1\over N_{subarray}}}$$ This means that all the elements within the j-th array can be scaled by dividing their value by the scaling factor computed for that subarray: $$M_i''={M_i'\over a_j}={log_2(T_i')\over a_j}$$ From here we can substitute T with its definition and obtain: $$M_i''={M_i'\over a_j}={log_2(T_i')\over a_j}={log_2({R_i'\over G_i'})\over a_j}$$ Which can be made equivalent to a transformation on the intensities $$R_i''=(R_i')^{1\over a_j} \ \ \ \ \ and \ \ \ \ \ G_i''=(G_i')^{1\over a_j}$$ 
+## Experiment replication
+Replication is essential for verifying and reducing the variation in an experiment. There are 2 main replication ways:
+- technical replicates
+- biological replicas
+the one used depends on the experiment design. There are 2 main experiment design choices, which are:
+- Dye reversal analysis: lets assume we have 2 samples and we performed two hybridizations, when we compare the results between the two (ideally) identical samples we expect that $$log_2(T_{1,i}'*T_{2,i})=(log_2({A_i\over B_i}{B_i\over A_i})=0$$ So we expect consistent measurements to have the previous quantity close to zero (which can be averaged). If a measurement deviates significantly from the previous analysis we can exclude it from further analysis.
+- replicate averaging: assume we have multiple replicates of the same experiment, we can average M and A values, which is the same as taking the geometric average of the raw measurements of R and G.
+## Detection of differential expression
+If we want to identify genes that are significantly differentially expressed between pair of samples we can implement different strategies:
+- **Thresholding** is the most "simple" one, but it has some variations
+	- **Constant thresholding**: $\tau$ is a constant threshold and $|M_i|>\tau$ means that the i-th gene is differentially expressed
+	- **Fixed thresholding**: we compute the standard deviation of all M values $\sigma_M$ and we have that if $|M_i|>c*\sigma_M$ then the i-th gene is differentially expressed
+	- **Adaptive thresholding**: instead of the general standard deviation we compute a local one $\sigma_{M}^{local}(A_i)$ of M values as a function of A, then $|M_i|>c*\sigma_{M}^{local}(A_i)$ then the i-th gene is differentially expressed.
+- **Gene by gene differential expression analysis**: We want a statistic that ranks the genes in order of "evidence" for differential expression, then we chose a critical value above which any value is considered significant. We must first define an unbiased sample mean and the sample standard deviation as: $\overline M_i={1\over N_{replicates}}\sum_{k=1}^{N_{replicates}}M_{k,i}'$ and $s_i^2={1\over N_{replicates}-1}\sum_{k=1}^{N_{replicates}}(M_{k,i}'-\overline M_i)^2$. We now formulate 2 hypothesis, the first, called null hypothesis state that  the i-th gene is not differentially expressed, the other states that it IS. we then define the distribution under the null hypothesis: $M_{k,i}'\in N(0,\sigma_i^2)$. we then compute the test statistic, the p-value and the significance. 
+- **Gene set DE analysis** will not be covered
+*t*-statistic: $$t={\overline x - \mu_0 \over s/\sqrt N}={\overline M_i \over s/\sqrt N}$$With N the sample number, mu a specific value, x the mean and s the standard deviation. Is used to compare a sample mean to a specific value. If the population is normally distributed, then under the null hypothesis the t-statistic is distributed as a t-student distribution with N-1 degrees of freedom. 
+With the test statistic computed and the distribution defined we can compute the *p*-value.
+the p-value represents the probability of observing under the null hypothesis a value less likely than that of the test statistic. 
+We define $F(t)=\int_{-\infty}^t f(t)dt$ as the cumulative density function of the probability density function under the null hypothesis, then the p-value of the i-th gene is given by: $$p_i=2*(1-F(|t_i|))$$The p-value is also the significance test, we set a threshold, which is usually 0.05 and if the p-value is smaller or equal to the threshold we reject the null hypothesis, meaning that the gene IS significantly differentially expressed.
+Note that the threshold set controls the false positive rate -> higher threshold means higher false positives.
+## Multiple testing correction
+The threshold of the p-value controls the false positive rate only when performing gene by gene analysis. When testing multiple genes simultaneously we need **multiple test correction**.
+![[Multiple_test_correction_reasoning_example.png]]There are multiple methods for this correction and depending on the method we get either more false positives or negatives. All the methods define different ways to correct the p-value of the performed tests.
+- **Bonferroni**: the most conservative one, has reduced false positives but presents more false negatives $$p_i^{adjusted}=p_i*N_{tests}$$
+- **Bonferroni-Holm**: a variation on the one presented before, we first rank the p-values $p_i, \ \ i=1,...,N_{tests} \ \ \ \ with \ \ \ \ p_i<P_{i+1}$ then for $i=1:N_{tests} \ \ with \ \ N_{tests}=N_{genes}$ we have the null hypothesis **rejected** if $$p_i^{adjusted}=p_i*(N_{tests}-i+1)\leq \alpha$$ otherwise the null hypothesis is accepted. Alpha is the threshold
+- **Westfall-Young**: for $j=1:M$ we perform a random sampling of the $N_{genes}$ then we compute the p-value $p_i^j$ for each expression level i, then we compute the minimum p-value $p^j=min_{i=1,...,N_{tests}} \ \ \ p_i^j$ . We now find the adjusted p-value as: $$p_i^{adjusted}={N_{p^j<p_i}\over N_{p^j}}$$This method is accurate, but requires resampling so it's costly.
+- **Benjamini-Hochberg**: also known as false discovery rate, we repeat the steps of Bonferroni-Holm, but the adjusted p-value for which we reject the null hypothesis is: $$p_i^{adjusted}=p_i*({N_{tests}\over i})\leq \alpha$$This is the least conservative method, but FDR controls the expected proportion of incorrectly rejected null hypotheses, known as type one errors or false positives.
+For now we only considered t-statistic, but it's not ideal, since  a large t-statistic can be driven by an unrealistically small value of s. This means that genes with small sample variance have a good chance of giving a large t-statistic even if they are not differentially expressed.
+Lets see 2 alternative statistics:
+- **B-statistic**: is an estimate of the posterior log-odds that each gene is DE (differentially expressed) (the log of the ratio of the probability of being DE and not being DE). Values for b-statistic greater than zero correspond to a greater than 50% chance that the gene is DE.
+- **Penalized t-statistic**: expressed as: $$t_i^p={\overline M_i\over \sqrt{(a+s_i^2)/N_{replicates}}}$$where a is the penalty estimated from the mean and standard deviation of the sample variance s^2
+## Full example
+We use the mean formula to find $\overline M_i$ then find the standard deviation with its formula (n=N-1), then find the t-value as $t={\overline x - \mu_0 \over s/\sqrt N}={\overline M_i \over s/\sqrt N}$.
+![[find_M_s_t-test.png]]With the two t-values we use the t-tables (here i report the graphical representation) to find the p-values:![[t-test_graph_example.png]]We can see that the first t-value, equal to around -1, includes a lot of the graph, while the second includes a little. The red area is the p-value, that we obtain heuristically from tables. The obtained values for the two genes i and j are reported in the image. As we can see the null hypothesis is rejected only for the gene j, which would be declared as differentially expressed (DE).
+## Experimental design of transcriptome studies
+Lets now see two types of experimental design of genetic expression (see [[Chapter 3 - Genetic expression]]) studies:
+- **Static experiments**
+- **Dynamic experiments**
+The static experiments have two or more subject classes with different [[Phenotype]] or treatments, for example the selection of genes with different expressions or supervised classification, while dynamic experiments have the same subject at different times, for example the selection of differentially expressed genes in time. 
+We can also apply machine learning (see [[Machine learning applications]]) to make these experiments.

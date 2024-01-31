@@ -1,0 +1,9 @@
+- **messenger RNA (mRNA)**: Is produced during translation, is the "intermediate" part between genes and proteins. ^mRNA
+- **ribosomal RNA (rRNAs)**: Structural and functional components of ribosomes (big cellular organelles with ovoid shape) where protein synthesis occur.
+- **transfer RNA (tRNAs)**: small molecules (around 80 nucleotides) with the function of transporting amino acids to molecules of RNA bonded to ribosomes. It has a "cloverleaf" structure, with sections that are double helix with other sections called **loops** are single. It has an **Acceptor stem** that has a 3' extremity where a particular amino acid can link and an **anticodon area** that consists of 3 bases that are complementary to a specific codon of mRNA to translate.
+- **small nuclear RNA (snRNA)**
+- **small interfering RNAs (siRNA)**
+- **micro RNA (miRNA)**
+- **long non-coding RNA (long ncRNA)**
+- **antisense RNAs**
+- ...

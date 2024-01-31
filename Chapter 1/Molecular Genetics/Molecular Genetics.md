@@ -1,0 +1,4 @@
+## DNA & RNA
+Long sequences of [[Nucleic acids]], in particular [[Nucleotides]], form the DNA ([[Nucleic acids#DNA]]) and the RNA ([[Nucleic acids#RNA]]). In RNA mRNA, rRNAs and tRNAs ([[RNA types]]) play leading roles for protein synthesis, while the other types have functions in **regulation**. 
+## Genome
+With genome we identify the genetic material of an organism. It generally refers to the DNA contained in each cell, but can often refers also to RNA and proteins (generated from DNA). Depending on the species the dimension and organization of the genome differs, in the [[Genome]] section I've reported the various type of organizations.

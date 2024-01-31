@@ -1,0 +1,3 @@
+Given a probability space (S,p) the entropy H is a measure of dispersion of the probability function of the objects in the space S. We can view H as a measure of uncertainty about the identity of the objects in a set.
+H has values \[0, $log_2|S|$ \] where Is = to 0 when $p_i=1$ and  $log_2|S|$ when all the possible objects in S are equally likely.
+the formal equation is: $$H=-\sum_{i=1}^{m}p_ilog_2p_i$$where m are the objects in S.

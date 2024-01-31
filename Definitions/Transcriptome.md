@@ -1,0 +1,1 @@
+All the possible transcripts (mRNA sequences) of an organism. Relevant in bioinformatics. It contains also the level of expression for each gene.

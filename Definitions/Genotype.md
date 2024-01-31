@@ -1,0 +1,1 @@
+The unique sequence of DNA of an individual.

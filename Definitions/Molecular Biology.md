@@ -1,0 +1,1 @@
+DEF: **discipline of biology that studies living beings at the level of molecular mechanisms that are the base of their physiology; in particular it studies the interactions between macromolecules (e.g. proteins and nucleic acids)**^molecularBiology

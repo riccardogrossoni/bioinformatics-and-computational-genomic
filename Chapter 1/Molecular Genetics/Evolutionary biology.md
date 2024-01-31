@@ -1,0 +1,1 @@
+A subfield of [[biology]] that regards the origin of a species from a common ancestor (while also considering changes and diversification over time). 

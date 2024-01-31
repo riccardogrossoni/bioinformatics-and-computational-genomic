@@ -1,0 +1,1 @@
+Is the asexual process through which cells reproduce. Simply put, the numer of chromosomes inside a cells doubles form 2 sets to 4 sets, the cell then splits into 2 copies of the original cell, each with 2 sets of chromosomes.

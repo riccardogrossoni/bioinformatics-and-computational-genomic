@@ -1,0 +1,1 @@
+Whole possible proteins (amino acid sequences) of an organism, deriving from different trascripts. 

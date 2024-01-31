@@ -1,0 +1,1 @@
+An observable property that comes with a significance measure.

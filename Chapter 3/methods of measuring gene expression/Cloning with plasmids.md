@@ -1,0 +1,1 @@
+It's also possible to replicate DNA using plasmids of bacteria as vectors to clone DNA sequences. The DNA is inserted into the plasmid's DNA using enzymes and then the plasmid is used to replicate the DNA sequence that was injected.
