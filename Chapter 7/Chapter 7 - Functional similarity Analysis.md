@@ -14,7 +14,7 @@ For the first step we can have different methods:
 ## Term to term similarity
 The most common method for computing term to term similarity requires 5 steps:
 1) Firstly we compute the frequency of occurrence of a term in a corpus (a corpus is for example all gene annotations to the ontology terms) as $$Freq(c)=\sum\{occur(c_i)|c\in Ancestors (c_i)\}$$$$Prob(c)={Freq(c)\over maxFreq}$$
-2) Compute the [[information content]] (IC) of a term (in a corpus) as $$IC(c)=-log(Prob(c))$$Generally, the more rare (specific) the term, the higher is its IC, the more common the lower it will be.
+2) Compute the [[Information content]] (IC) of a term (in a corpus) as $$IC(c)=-log(Prob(c))$$Generally, the more rare (specific) the term, the higher is its IC, the more common the lower it will be.
 3) Find the common ancestors of two terms as $$CommonAnc(c_1, c_2)=Ancestors(c_1)\cap Ancestors(c_2)$$
 4) Compute the shared information between two terms as $$Share(c_1,c_2)=max\{IC(a)|a\in CommonAnc(c_1,c_2)\}$$That is, the information content of the [[Lowest Common Ancestor (LCA)]]
 5) Compute the similarity metrics between two terms. For this point there are various metrics available (see [[Similarity_metrics(term-to-term).png]])

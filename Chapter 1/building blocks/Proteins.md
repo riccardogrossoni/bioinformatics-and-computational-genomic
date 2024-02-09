@@ -2,7 +2,7 @@ Are polymers constituted by chains of amino acids (called monomers).
 ## Amino acids 
 Are molecules constituted by a central Carbon atom connected with:
 - 1 atom of Hydrogen
-- 1 amino group (-NH_2)
+- 1 amino group (-$NH_2$)
 - 1 carboxylate group (-COOH)
 - 1 side-chain (R) that varies for each amino acid
 There are 20 amino acids. The molecule have 2 extremities, one ending with the carboxylate group called **C-terminus**, the other ending with the amine group called **N-terminus**. 
